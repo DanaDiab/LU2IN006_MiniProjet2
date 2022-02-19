@@ -1,0 +1,6 @@
+1 le_Horla Maupassant
+2 LOTR Tolkien
+3 le_Horla Maupassant
+4 La_bete_humaine Zola
+5 Silent_Spring Carson
+6 La_promesse Gary
