@@ -9,7 +9,7 @@ Biblio* charger_n_entrees(char* nomfic, int n){
 	char auteur[256], titre[256]; int num;
 	Biblio* biblio=creer_biblio();
 	FILE* fichier=fopen(nomfic,"r");
-	while ((fgets(buffer,256,fichier)!=NULL) && i<n){
+	while (i<n && (fgets(buffer,256,fichier)!=NULL)){
 		i++;
 		sscanf(buffer,"%d %s %s\n",&num,titre,auteur);
 		inserer_en_tete(biblio,num,titre,auteur);

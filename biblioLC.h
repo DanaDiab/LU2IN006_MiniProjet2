@@ -30,4 +30,7 @@ void afficher_biblio(Biblio *b);
 void afficher_livre(Livre *l);
 Biblio* recherche_par_meme_auteur(Biblio *b , char *auteur);
 Biblio *fusion(Biblio *b1, Biblio *b2);
+Biblio* plusieurs_exemplaires(Biblio *b);
+int livres_identiques(Livre *l1, Livre *l2);
+
 #endif

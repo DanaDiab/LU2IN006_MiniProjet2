@@ -3,6 +3,7 @@
 #include <string.h>
 #include "biblioLC.h"
 
+//_______________ALLOCATION_D'UN_LIVRE_____________________
 Livre *creer_livre(int num, char* titre, char* auteur)
 	{
 	Livre * new_livre = (Livre*)malloc(sizeof(Livre));
@@ -14,28 +15,117 @@ Livre *creer_livre(int num, char* titre, char* auteur)
 	new_livre->auteur = strdup(auteur);
 	return new_livre;
 	}
-	
-void liberer_livre(Livre* l){
-	Livre *tmp=l;
-	while (tmp){
-		tmp=tmp->suiv;
-		free(l->titre);
-		free(l->auteur);
-		free(l);
-		l=tmp;
-	}
+
+//__________________LIBERATION_D'UN_LIVRE___________________	
+void liberer_livre(Livre* l)
+{
+	free(l->titre);
+	free(l->auteur);
+	free(l);
 }
+
+
+//_______COMPARAISON_DE_DEUX_LIVRES_____________________//
+
+int livres_identiques(Livre *l1, Livre *l2)
+{
+	if((strcmp(l1->auteur, l2->auteur)==0)&&(strcmp(l1->titre, l2->titre)==0))
+	{
+		return 1;
+	}
+	return 0;
+}
+
+/*____________________________PLUSIEURS_EXEMPLAIRES___________________*/
+
+//Cette fonction prend une bibliotheque et retourne une liste de livres qui contient tous les ouvrages présents en plusieur exemplaires. On duplique la bibliotheque fournie au fur et a mesure du parcours avec la fonction inserer_en_tete(Biblio, num, livre, auteur). Cette duplication est nécessaire car nous allons procéder par suppression de tous les ouvrages présents en un unique exemplaire dans la liste d'origine pointéee au départ par b->l. On fait le choix de conserver la donnée intacte. Note : b->l après execution de la fonction contiendra tous les éléments de b->l mais en ordre inverse. 
+
+//Afin d'obtenir une complexité en n2, on n'utilisera pas la focntion de suppression "supr_ouvrage" qui procède a une recherche et est donc en O(n), on supprimera l'élément dans le corps de la boucle en O(1) a la place. 
+
+Biblio* plusieurs_exemplaires(Biblio *b)
+{
+//declaration variables :
+Livre* parc1 = b->L; //var de parcours de la premiere boucle
+Livre* parc2; //var de parcours de la deuxième boucle
+Livre* prec = parc1; //Element précédent en vue de l'eventuelle suppression
+Livre* head = b->L; //On garde un pointeur sur la tête de liste
+int flag; //drapeau a lever en cas de detection d'un doublon
+Biblio *res=creer_biblio();
+/*tests sur la liste vide et liste d'un seul élément*/
+
+if( (parc1 == NULL) || (parc1->suiv==NULL) )
+{
+	return res;
+}
+
+b->L=NULL; //On peut maintenant "vider" la bibliothèque qu'on remplira a nouveau avec des copies de chacun des éléments au fil du parcours.
+
+while(parc1)
+{
+	inserer_en_tete(b, parc1->num, parc1->titre, parc1->auteur); //copie de l'élément en cours
+	parc2=head; //on affecte la variable de parcours no 2
+	flag = 0; //on initialise la variable de test a 0 a chaque nouvel élément testé
 	
+	while(parc2)
+	{
+		if((livres_identiques(parc1, parc2))&&(parc1!=parc2)) //on vérifie qu'ils sont identiques mais qu'ils ne sont pas la même instance
+		{
+			//on a trouvé un livre identique a l'élément testé (parc1)
+			flag=1;//on lève le drapeau
+			break;
+		}
+		parc2=parc2->suiv;
+	}
+	
+	if(!flag)//si on a pas trouvé de doublon on procède a la suppression de l'élément
+	{
+		if(parc1==head)//si notre élément a supr est en tête de liste
+		{
+			head=parc1->suiv; //on deplace la tete a l'element suivant
+			liberer_livre(parc1);
+			parc1=head; //On retablit la variable de parcours (note elle a été itérée lors de la suppression) 
+		}
+		else
+		{
+			prec->suiv=parc1->suiv; //suppression d'un élément de la liste qui n'est pas en tête
+			liberer_livre(parc1);
+			parc1=prec->suiv; 
+		}
+	}
+	else
+	{
+		//l'itération n'a lieu que si on a pas supprimé d'élément car la suppression itère la variable de parcours au passage. 
+		prec=parc1;
+		parc1=parc1->suiv; 
+	}
+	
+}
+res->L=head;
+return res;	
+}
+
+
+
+/*_______________________ALLOCATION_BIBLIO________________*/	
 Biblio* creer_biblio(){
 	Biblio* biblio=(Biblio*)malloc(sizeof(Biblio));
 	biblio->L=NULL;
 	return biblio;
 	}
-	
-void liberer_biblio(Biblio* b){
-	liberer_livre(b->L);
-	free(b);
+
+//______________________LIBERATION_D'UNE____BIBLIO____________
+void liberer_biblio(Biblio* b)
+{
+	Livre* parc=b->L;
+	Livre* tmp;
+	while(parc)
+	{
+		tmp=parc->suiv;
+		liberer_livre(parc);
+		parc=tmp;
 	}
+	free(b);
+}
 	
 void inserer_en_tete(Biblio* b, int num, char* titre,char* auteur){
 	Livre * l=creer_livre(num,titre,auteur);
@@ -55,6 +145,7 @@ void afficher_biblio(Biblio *b){
 		afficher_livre(prc);
 		prc=prc->suiv;
 	}
+	printf("\n");
 	}
 	
 Livre* recherche_par_num(Biblio *b, int num){
@@ -101,7 +192,7 @@ Biblio *supr_ouvrage(Biblio *b, int num, char* auteur, char * titre)
 			b->L=pred;
 			return b;
 		}
-		free(ptr);
+		liberer_livre(ptr);
 	}
 	return b;
 }
