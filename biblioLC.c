@@ -33,7 +33,7 @@ Biblio* creer_biblio(){
 	return biblio;
 	}
 
-//______________________LIBERATION_D'UNE____BIBLIO____________
+//______________________LIBERATION_D'UNE_BIBLIO____________
 void liberer_biblio(Biblio* b)
 {
 	Livre* parc=b->L;
@@ -46,19 +46,22 @@ void liberer_biblio(Biblio* b)
 	}
 	free(b);
 }
-	
+
+//_________________INSERTION_EN_TETE_________________________
 void inserer_en_tete(Biblio* b, int num, char* titre,char* auteur){
 	Livre * l=creer_livre(num,titre,auteur);
 	l->suiv=b->L;
 	b->L=l;
 	}
-	
+
+//______________________AFFICHAGE_LIVRE_______________________
 void afficher_livre(Livre *l){
 	if (l!=NULL){
 		printf("Numero : %d , Titre: %s , Auteur: %s\n", l->num,l->titre, l->auteur);
 		}
 	}
-	
+
+//______________________AFFICHAGE_BIBLIO_____________________
 void afficher_biblio(Biblio *b){
 	Livre* prc = b->L;
 	while (prc){
@@ -67,21 +70,24 @@ void afficher_biblio(Biblio *b){
 	}
 	printf("\n");
 	}
-	
+
+//____________________________RECHERCHE_OUVRAGE_PAR_NUMERO_____________________
 Livre* recherche_par_num(Biblio *b, int num){
 	while ((b->L) && (b->L->num!=num)){
 		b->L=b->L->suiv;
 	}
 	return b->L;
 	}
-	
+
+//___________________________RECHERCHE_PAR_TITRE_________________
 Livre* recherche_par_titre(Biblio *b, char *titre){
 	while ((b->L) && (strcmp(b->L->titre,titre)!=0)){
 		b->L=b->L->suiv;
 	}
 	return b->L;
 	}
-	
+
+//_____________________________RECHERCHE_PAR_AUTEUR______________________
 Biblio* recherche_par_meme_auteur(Biblio *b , char *auteur){
 	Biblio *new_b=creer_biblio();
 	while (b->L){
@@ -92,7 +98,8 @@ Biblio* recherche_par_meme_auteur(Biblio *b , char *auteur){
 	}
 	return new_b;
 	}
-	
+
+//___________________________SUPRESSION_D'OUVRAGE____________________________
 Biblio *supr_ouvrage(Biblio *b, int num, char* auteur, char * titre)
 {	
 
@@ -117,6 +124,7 @@ Biblio *supr_ouvrage(Biblio *b, int num, char* auteur, char * titre)
 	return b;
 }
 
+//____________________________FUSION_DE_BIBLIOS__________________
 Biblio *fusion(Biblio *b1, Biblio *b2)
 {
 	Biblio *tete_b2=b2;
@@ -164,12 +172,14 @@ if( (parc1 == NULL) || (parc1->suiv==NULL) )
 
 b->L=NULL; //On peut maintenant "vider" la bibliothèque qu'on remplira a nouveau avec des copies de chacun des éléments au fil du parcours.
 
+//PARCOURS1 : premiere boucle
 while(parc1)
 {
 	inserer_en_tete(b, parc1->num, parc1->titre, parc1->auteur); //copie de l'élément en cours
 	parc2=head; //on affecte la variable de parcours no 2
 	flag = 0; //on initialise la variable de test a 0 a chaque nouvel élément testé
 	
+	//PARCOURS2 : deuxieme boucle
 	while(parc2)
 	{
 		if((livres_identiques(parc1, parc2))&&(parc1!=parc2)) //on vérifie qu'ils sont identiques mais qu'ils ne sont pas la même instance
