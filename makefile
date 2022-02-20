@@ -1,4 +1,4 @@
-all:main
+all:main test_mainLC test_mainH main_temps_recherche vitesse_plusieurs_exemplaires
 
 entreeSortieLC.o : entreeSortieLC.c entreeSortieLC.h
 	gcc -Wall -c entreeSortieLC.c -o entreeSortieLC.o
@@ -30,6 +30,17 @@ biblioH.o: biblioH.c biblioH.h
 test_mainH: test_mainH.o biblioH.o entreeSortieH.o
 	gcc -Wall -o test_mainH test_mainH.o biblioH.o entreeSortieH.o -lm
 	
+main_temps_recherhce.o: main_temps_recherche.c entreeSortieLC.h biblioLC.h entreeSortieH.h biblioH.h
+	gcc -Wall -c main_temps_recherche.c -o main_temps_recherche.o -lm
+
+main_temps_recherche: main_temps_recherche.o entreeSortieLC.o biblioLC.o entreeSortieH.o biblioH.o
+	gcc -Wall -o main_temps_recherche main_temps_recherche.o entreeSortieLC.o biblioLC.o entreeSortieH.o biblioH.o -lm
+
+vitesse_plusieurs_exemplaires.o: vitesse_plusieurs_exemplaires.c entreeSortieLC.h biblioLC.h entreeSortieH.h biblioH.h
+	gcc -Wall -c vitesse_plusieurs_exemplaires.c -o vitesse_plusieurs_exemplaires.o -lm
+
+vitesse_plusieurs_exemplaires: vitesse_plusieurs_exemplaires.o entreeSortieLC.o biblioLC.o entreeSortieH.o biblioH.o
+	gcc -Wall -o vitesse_plusieurs_exemplaires vitesse_plusieurs_exemplaires.o entreeSortieLC.o biblioLC.o entreeSortieH.o biblioH.o -lm
 
 	
 
