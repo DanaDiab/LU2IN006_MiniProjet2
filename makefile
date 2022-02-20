@@ -12,8 +12,8 @@ biblioLC.o : biblioLC.c biblioLC.h
 main.o: main.c entreeSortieLC.h biblioLC.h
 	gcc -ggdb -Wall -c main.c -o main.o
 
-main: main.o entreeSortieLC.o biblioLC.o
-	gcc -ggdb -Wall -o main main.o entreeSortieLC.o biblioLC.o
+main: main.o entreeSortieLC.o biblioLC.o entreeSortieH.o biblioH.o
+	gcc -ggdb -Wall -o main main.o entreeSortieLC.o biblioLC.o entreeSortieH.o biblioH.o -lm
 	
 test_mainLC.o: test_mainLC.c entreeSortieLC.h biblioLC.h
 	gcc -ggdb -Wall -c test_mainLC.c -o test_mainLC.o
