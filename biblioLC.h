@@ -18,12 +18,12 @@ typedef struct
 Biblio;
 
 //PROTOTYPES FONCTIONS 
-Livre *creer_livre(int num, char* titre, char* auteur);
+Livre *creer_livre(int num, char* titre, char* auteur); //Alloue un livre : (MALLOC)
 void liberer_livre(Livre *l);
-Biblio* creer_biblio();
+Biblio* creer_biblio(); //alloue une bibliothèque vide, la retourne (MALLOC)
 void liberer_biblio(Biblio* b);
-void inserer_en_tete(Biblio *b, int num, char* titre, char* auteur);
-Biblio *supr_ouvrage(Biblio *b, int num, char* auteur, char * titre);
+void inserer_en_tete(Biblio *b, int num, char* titre, char* auteur); //Alloue et insère en tête le livre dont les attributs sont fournits en paramètres : (MALLOC)
+Biblio *supr_ouvrage(Biblio *b, int num, char* auteur, char * titre); //Recherche et suppression (en O(n), n le nombre d'éléments de la biblio) du livre qui a ce numéro, cet auteur et ce titre.
 Livre* recherche_par_titre(Biblio *b, char *titre);
 Livre* recherche_par_num(Biblio *b, int num);
 void afficher_biblio(Biblio *b);
