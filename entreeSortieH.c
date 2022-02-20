@@ -7,7 +7,7 @@ BiblioH* charger_n_entrees_H(char* nomfic, int n){
   	char buffer[256]; int i=0;
 	char auteur[256];
 	char titre[256]; int num;
-	BiblioH* biblio=creer_biblio_H(n); //Creation de la BiblioH 
+	BiblioH* biblio=creer_biblio_H(100); //Creation de la BiblioH 
 	FILE* fichier=fopen(nomfic,"r"); //Ouverture du fichier en mode lecture
 	if (fichier==NULL) return NULL; //En cas d'erreur lors de l'ouverture
 	while ((fgets(buffer,256,fichier)!=NULL) && (i<n)){ //Lecture de n lignes ou jusqu'à la fin du fichier
