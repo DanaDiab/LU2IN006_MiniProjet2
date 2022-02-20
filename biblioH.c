@@ -47,6 +47,7 @@ BiblioH* creer_biblio_H(int taille)
 	biblioh->nE=0;
 	biblioh->m=taille;
 	biblioh->T=(LivreH**)(malloc(sizeof(LivreH*)*taille));
+	for (int i=0;i<biblioh->m;i++) biblioh->T[i]=NULL;
 	return biblioh;
 }
 
@@ -54,20 +55,20 @@ BiblioH* creer_biblio_H(int taille)
 
 void liberer_livre_H(LivreH* l)
 {
-	LivreH *tmp=l;
-	while (tmp){
-		tmp=tmp->suiv;
-		free(l->titre);
-		free(l->auteur);
-		free(l);
-		l=tmp;
-	}
+	free(l->titre);
+	free(l->auteur);
+	free(l);
 }
 
 /*________________________LIBERER_BIBlIO_H_____________*/
 void liberer_biblio_H(BiblioH* b){
 	for (int i=0;i<b->m;i++){
-		liberer_livre_H(b->T[i]);
+		LivreH* ptr=b->T[i];
+		while (ptr){
+			ptr=b->T[i]->suiv;
+			liberer_livre_H(b->T[i]);
+			b->T[i]=ptr;
+		}
 	}
 	free(b->T);
 	free(b);
@@ -86,8 +87,8 @@ int fonctionHachage(int cle, int m){
 void inserer(BiblioH* b , int num, char* titre,char* auteur){
 	LivreH* l=creer_livre_H(num,titre,auteur);
 	int pos=fonctionHachage(l->clef,b->m);
-	l->suiv=b->T[pos];
-	b->T[pos]=l;
+	l->suiv=(b->T)[pos];
+	(b->T)[pos]=l;
 	b->nE++;
 }
 
@@ -111,7 +112,6 @@ void afficher_biblio_H(BiblioH * b){
 				ptr=ptr->suiv;
 			}
 	}
-	printf("%d\n",b->nE);
 }
 
 /*______________________RECHERCHE_PAR_NUM_H___________*/
@@ -175,10 +175,12 @@ BiblioH *suppression_ouvrage_H(BiblioH *b, int num, char* auteur, char * titre)
 			}else{
 				pred=ptr->suiv;
 				b->T[i]=pred;
-				free(ptr);
+				liberer_livre_H(ptr);
+				b->nE=(b->nE)-1;
 				return b;
 			}
-			free(ptr);
+			b->nE=(b->nE)-1;
+			liberer_livre_H(ptr);
 		}
 	}
 	return b;
@@ -196,3 +198,5 @@ BiblioH* fusion_H(BiblioH* b1, BiblioH* b2){
 	liberer_biblio_H(b2);
 	return b1;
 }
+
+/________________________PLUSIEURS_EXEMPLAIRES___________*/
