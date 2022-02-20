@@ -33,7 +33,9 @@ LivreH* recherche_par_titre_H(BiblioH* b, char* titre);
 LivreH* recherche_par_num_H(BiblioH* b, int num);
 void afficher_biblio_H(BiblioH * b);
 void inserer(BiblioH* b , int num, char* titre,char* auteur);
-
+void plusieurs_exemplaires_i(BiblioH *b, BiblioH *res, int i);
+int livres_identiques_H(LivreH *l1, LivreH *l2);
+BiblioH* plusieurs_exemplaires_H(BiblioH* b);
 
 
 #endif

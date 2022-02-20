@@ -198,5 +198,90 @@ BiblioH* fusion_H(BiblioH* b1, BiblioH* b2){
 	return b1;
 }
 
-/*____________________PLUSIEURS_EXEMPLAIRES_H___________*//*
-BiblioH* plusieurs_exmplaires_H(BiblioH* b)
+/*____________________PLUSIEURS_EXEMPLAIRES_H___________*/
+
+BiblioH* plusieurs_exemplaires_H(BiblioH* b)
+{
+	int i;
+	BiblioH *res = creer_biblio_H(b->m);
+	for(i=0; i<b->m; i++)
+	{
+		plusieurs_exemplaires_i(b, res, i);
+	}
+	return res;
+}
+
+/*_____________________PLUSIEURS_EXEMPLAIRES_FONCTION_INTERMDEDIAIRE_______________*/
+
+int livres_identiques_H(LivreH *l1, LivreH *l2)
+{
+	if((strcmp(l1->auteur, l2->auteur)==0)&&(strcmp(l1->titre, l2->titre)==0))
+	{
+		return 1;
+	}
+	return 0;
+}
+
+void plusieurs_exemplaires_i(BiblioH *b, BiblioH *res, int i)
+{
+	//declaration variables :
+LivreH* parc1 = (b->T)[i]; //var de parcours de la premiere boucle
+LivreH* parc2; //var de parcours de la deuxième boucle
+LivreH* prec = parc1; //Element précédent en vue de l'eventuelle suppression
+LivreH* head = parc1;; //On garde un pointeur sur la tête de liste
+int flag; //drapeau a lever en cas de detection d'un doublon
+
+if( (parc1 == NULL) || (parc1->suiv==NULL) )
+{
+	return;
+}
+
+(b->T)[i]=NULL; //On peut maintenant "vider" la bibliothèque qu'on remplira a nouveau avec des copies de chacun des éléments au fil du parcours.
+
+//PARCOURS1 : premiere boucle
+while(parc1)
+{
+	inserer(b, parc1->num, parc1->titre, parc1->auteur); //copie de l'élément en cours
+	parc2=head; //on affecte la variable de parcours no 2
+	flag = 0; //on initialise la variable de test a 0 a chaque nouvel élément testé
+	
+	//PARCOURS2 : deuxieme boucle
+	while(parc2)
+	{
+		if((livres_identiques_H(parc1, parc2))&&(parc1!=parc2)) //on vérifie qu'ils sont identiques mais qu'ils ne sont pas la même instance
+		{
+			//on a trouvé un livre identique a l'élément testé (parc1)
+			flag=1;//on lève le drapeau
+			break;
+		}
+		parc2=parc2->suiv;
+	}
+	
+	if(!flag)//si on a pas trouvé de doublon on procède a la suppression de l'élément
+	{
+		if(parc1==head)//si notre élément a supr est en tête de liste
+		{
+			head=parc1->suiv; //on deplace la tete a l'element suivant
+			liberer_livre_H(parc1);
+			parc1=head; //On retablit la variable de parcours (note elle a été itérée lors de la suppression) 
+		}
+		else
+		{
+			prec->suiv=parc1->suiv; //suppression d'un élément de la liste qui n'est pas en tête
+			liberer_livre_H(parc1);
+			parc1=prec->suiv; 
+		}
+	}
+	else
+	{
+		//l'itération n'a lieu que si on a pas supprimé d'élément car la suppression itère la variable de parcours au passage. 
+		prec=parc1;
+		parc1=parc1->suiv; 
+	}
+	
+}
+(res->T[i])=head;
+return;	
+}
+
+
