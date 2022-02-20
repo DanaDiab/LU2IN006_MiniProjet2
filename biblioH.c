@@ -146,42 +146,41 @@ LivreH* recherche_par_titre_H(BiblioH* b, char* titre){
 /*______________________RECHERCHE_PAR_AUTEUR___________*/
 BiblioH* recherche_par_auteur_H(BiblioH* b, char* auteur){
 	BiblioH* res=creer_biblio_H(b->m);
-	for (int i=0;i<b->m;i++){
-			LivreH* ptr=b->T[i];
-			while (ptr!=NULL){
-				if (strcmp(ptr->auteur,auteur)==0){
-					inserer(res,ptr->num,ptr->titre,ptr->auteur);
-				}
-				ptr=ptr->suiv;
-			}
+	int c=fonctionClef(auteur);
+	int pos=fonctionHachage(c,b->m);
+	LivreH* ptr=b->T[pos];
+	while (ptr!=NULL){
+		if (strcmp(ptr->auteur,auteur)==0){
+			inserer(res,ptr->num,ptr->titre,ptr->auteur);
+		}
+		ptr=ptr->suiv;
 	}
 	return res;
 }
 /*______________________SUPPRESSION_OUVRAGE_H__________*/
 BiblioH *suppression_ouvrage_H(BiblioH *b, int num, char* auteur, char * titre)
 {
-	for (int i=0; i<b->m;i++){
-		LivreH *ptr=b->T[i];
-		LivreH* pred=NULL;
+	int c=fonctionClef(auteur);
+	int pos=fonctionHachage(c,b->m);
+	LivreH *ptr=b->T[pos];
+	LivreH* pred=NULL;
 
-		while ((ptr!=NULL) && ((ptr->num != num) || (strcmp(ptr->auteur, auteur)!=0) || (strcmp(ptr->titre, titre)!=0))){
-			pred=ptr;
-			ptr=ptr->suiv;
-		}
+	while ((ptr!=NULL) && ((ptr->num != num) || (strcmp(ptr->auteur, auteur)!=0) || (strcmp(ptr->titre, titre)!=0))){
+		pred=ptr;
+		ptr=ptr->suiv;
+	}
 
-		if (ptr!=NULL){
-			if (pred!=NULL){
-				pred->suiv=ptr->suiv;
-			}else{
-				pred=ptr->suiv;
-				b->T[i]=pred;
-				liberer_livre_H(ptr);
-				b->nE=(b->nE)-1;
-				return b;
-			}
-			b->nE=(b->nE)-1;
-			liberer_livre_H(ptr);
+	if (ptr!=NULL){
+		if (pred!=NULL){
+			pred->suiv=ptr->suiv;
+		}else{
+			pred=ptr->suiv;
+			b->T[pos]=pred;
+			return b;
 		}
+		b->nE=(b->nE)-1;
+		liberer_livre_H(ptr);
+	
 	}
 	return b;
 }
@@ -199,4 +198,5 @@ BiblioH* fusion_H(BiblioH* b1, BiblioH* b2){
 	return b1;
 }
 
-/________________________PLUSIEURS_EXEMPLAIRES___________*/
+/*____________________PLUSIEURS_EXEMPLAIRES_H___________*//*
+BiblioH* plusieurs_exmplaires_H(BiblioH* b)
