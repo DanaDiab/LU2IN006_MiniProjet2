@@ -16,7 +16,7 @@ void menu()
 	printf(" - 4 : recherche par titre\n");
 	printf(" - 5 : recherche par numero\n");
 	printf(" - 6 : recherche par auteur\n");
-	printf(" - 7 : recherche ouvrages à plusieurs exemplaires");
+	printf(" - 7 : recherche ouvrages à plusieurs exemplaires\n");
 }
 
 int main(int argc, char* argv[] )
@@ -82,7 +82,9 @@ int main(int argc, char* argv[] )
 					fgets(buffer, 256, stdin);
 					sscanf(buffer,"%s",nom_auteur);
 					printf("Les livres sont:\n");
-					afficher_biblio(recherche_par_meme_auteur(b_lc,nom_auteur));
+			Biblio* blc_auteur=recherche_par_meme_auteur(b_lc,nom_auteur);
+					afficher_biblio(blc_auteur);
+					liberer_biblio(blc_auteur);
 					break;
 				}
 				break;
@@ -134,7 +136,9 @@ int main(int argc, char* argv[] )
 					fgets(buffer, 256, stdin);
 					sscanf(buffer,"%s",nom_auteur);
 					printf("Les livres sont:\n");
-					afficher_biblio_H(recherche_par_auteur_H(b_h,nom_auteur));
+					BiblioH* bh_auteur=recherche_par_auteur_H(b_h,nom_auteur);
+					afficher_biblio_H(bh_auteur);
+					liberer_biblio_H(bh_auteur);
 					break;
 				}
 			break;
