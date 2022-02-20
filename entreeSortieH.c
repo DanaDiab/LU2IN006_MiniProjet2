@@ -4,13 +4,14 @@
 #include "biblioH.h"
 
 BiblioH* charger_n_entrees_H(char* nomfic, int n){
-  char buffer[256]; int i=0;
-	char auteur[256], titre[256]; int num;
+  	char buffer[256]; int i=0;
+	char auteur[256];
+	char titre[256]; int num;
 	BiblioH* biblio=creer_biblio_H(n);
 	FILE* fichier=fopen(nomfic,"r");
-	while ((fgets(buffer,256,fichier)!=NULL) && i<n){
+	while ((fgets(buffer,256,fichier)!=NULL) && (i<n)){
 		i++;
-		sscanf(buffer,"%d %s %s\n",&num,titre,auteur);
+		sscanf(buffer," %d %s %s\n",&num,titre,auteur);
 		inserer(biblio,num,titre,auteur);
 		}
 	fclose(fichier);
