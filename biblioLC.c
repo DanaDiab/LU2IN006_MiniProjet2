@@ -6,11 +6,11 @@
 //_______________ALLOCATION_D'UN_LIVRE_____________________
 Livre *creer_livre(int num, char* titre, char* auteur)
 	{
-	Livre * new_livre = (Livre*)malloc(sizeof(Livre));
-	if (new_livre==NULL){
+	Livre * new_livre = (Livre*)malloc(sizeof(Livre)); //Allocation d'un Livre
+	if (new_livre==NULL){ //En cas d'erreur d'allocation
 		return NULL;
 	}
-	new_livre->num=num;
+	new_livre->num=num;	//Affectation des valeurs
 	new_livre->titre = strdup(titre);
 	new_livre->auteur = strdup(auteur);
 	return new_livre;
@@ -19,16 +19,16 @@ Livre *creer_livre(int num, char* titre, char* auteur)
 //__________________LIBERATION_D'UN_LIVRE___________________	
 void liberer_livre(Livre* l)
 {
-	free(l->titre);
+	free(l->titre);		//Liberation des zones mémoires allouées avec strdup
 	free(l->auteur);
-	free(l);
+	free(l);		//Liberation du Livre
 }
 
 
 
 /*_______________________ALLOCATION_BIBLIO________________*/	
 Biblio* creer_biblio(){
-	Biblio* biblio=(Biblio*)malloc(sizeof(Biblio));
+	Biblio* biblio=(Biblio*)malloc(sizeof(Biblio)); //Allocation dynamique d'une Biblio
 	biblio->L=NULL;
 	return biblio;
 	}
@@ -38,20 +38,20 @@ void liberer_biblio(Biblio* b)
 {
 	Livre* parc=b->L;
 	Livre* tmp;
-	while(parc)
+	while(parc)	//Parcours de la liste de Livre
 	{
 		tmp=parc->suiv;
-		liberer_livre(parc);
+		liberer_livre(parc); //Liberation des Livre
 		parc=tmp;
 	}
-	free(b);
+	free(b); // Liberation de la Biblio
 }
 
 //_________________INSERTION_EN_TETE_________________________
 void inserer_en_tete(Biblio* b, int num, char* titre,char* auteur){
-	Livre * l=creer_livre(num,titre,auteur);
-	l->suiv=b->L;
-	b->L=l;
+	Livre * l=creer_livre(num,titre,auteur); //Creation d'un livre
+	l->suiv=b->L;		//Insertion en tête
+	b->L=l;			//Changement de la zone à laquelle pointe b->L
 	}
 
 //______________________AFFICHAGE_LIVRE_______________________
@@ -64,8 +64,8 @@ void afficher_livre(Livre *l){
 //______________________AFFICHAGE_BIBLIO_____________________
 void afficher_biblio(Biblio *b){
 	Livre* prc = b->L;
-	while (prc){
-		afficher_livre(prc);
+	while (prc){	//Parcours de la liste de Livre
+		afficher_livre(prc);	//Affichade de chaque Livre
 		prc=prc->suiv;
 	}
 	printf("\n");
@@ -73,7 +73,7 @@ void afficher_biblio(Biblio *b){
 
 //____________________________RECHERCHE_OUVRAGE_PAR_NUMERO_____________________
 Livre* recherche_par_num(Biblio *b, int num){
-	while ((b->L) && (b->L->num!=num)){
+	while ((b->L) && (b->L->num!=num)){	//Parcours de liste jusqu'à trouver un Livre ayant numéro=num ou fin de la liste
 		b->L=b->L->suiv;
 	}
 	return b->L;
@@ -81,7 +81,7 @@ Livre* recherche_par_num(Biblio *b, int num){
 
 //___________________________RECHERCHE_PAR_TITRE_________________
 Livre* recherche_par_titre(Biblio *b, char *titre){
-	while ((b->L) && (strcmp(b->L->titre,titre)!=0)){
+	while ((b->L) && (strcmp(b->L->titre,titre)!=0)){ //Parcours de liste jusqu'à trouver un Livre ayant titre="titre" ou fin de la liste
 		b->L=b->L->suiv;
 	}
 	return b->L;
@@ -89,10 +89,10 @@ Livre* recherche_par_titre(Biblio *b, char *titre){
 
 //_____________________________RECHERCHE_PAR_AUTEUR______________________
 Biblio* recherche_par_meme_auteur(Biblio *b , char *auteur){
-	Biblio *new_b=creer_biblio();
-	while (b->L){
-		if (strcmp(b->L->auteur,auteur)==0){
-			inserer_en_tete(new_b,b->L->num,b->L->titre,b->L->auteur);
+	Biblio *new_b=creer_biblio(); //Creation d'une Biblio
+	while (b->L){ //Parcours de liste de Livre
+		if (strcmp(b->L->auteur,auteur)==0){ //Comparaison entre la valeur auteur en argument et l'autre du Livre
+			inserer_en_tete(new_b,b->L->num,b->L->titre,b->L->auteur); //insertion en tete
 		}
 		b->L=b->L->suiv;
 	}
@@ -106,20 +106,20 @@ Biblio *supr_ouvrage(Biblio *b, int num, char* auteur, char * titre)
 	Livre *ptr=b->L;
 	Livre* pred=NULL;
 	
-	while ((ptr!=NULL) && ((ptr->num != num) || (strcmp(ptr->auteur, auteur)!=0) || (strcmp(ptr->titre, titre)!=0))){
+	while ((ptr!=NULL) && ((ptr->num != num) || (strcmp(ptr->auteur, auteur)!=0) || (strcmp(ptr->titre, titre)!=0))){ //Iteration jusqu'à rencontrer le Livre à supprimer ou atteindre la fin de la liste
 		pred=ptr;
 		ptr=ptr->suiv;
 	}
 	
 	if (ptr!=NULL){
 		if (pred!=NULL){
-			pred->suiv=ptr->suiv;
+			pred->suiv=ptr->suiv; //Livre à supprimer est en tete de la liste
 		}else{
-			pred=ptr->suiv;
-			b->L=pred;
+			pred=ptr->suiv; //changement des liaisons
+			b->L=pred;  //changement de la tete de liste
 			return b;
 		}
-		liberer_livre(ptr);
+		liberer_livre(ptr); //liberation de livre qui est à supprimer
 	}
 	return b;
 }
@@ -128,12 +128,12 @@ Biblio *supr_ouvrage(Biblio *b, int num, char* auteur, char * titre)
 Biblio *fusion(Biblio *b1, Biblio *b2)
 {
 	Biblio *tete_b2=b2;
-	while(b2->L)
+	while(b2->L) //parcours de la liste
 	{
-		inserer_en_tete(b1, b2->L->num, b2->L->titre, b2->L->auteur);
+		inserer_en_tete(b1, b2->L->num, b2->L->titre, b2->L->auteur); //insertion d livre dans la Biblio b1
 		b2->L=b2->L->suiv;
 	}
-	liberer_biblio(tete_b2);
+	liberer_biblio(tete_b2); //liberation de la Biblio b2
 	return b1;
 }
 
@@ -141,7 +141,7 @@ Biblio *fusion(Biblio *b1, Biblio *b2)
 
 int livres_identiques(Livre *l1, Livre *l2)
 {
-	if((strcmp(l1->auteur, l2->auteur)==0)&&(strcmp(l1->titre, l2->titre)==0))
+	if((strcmp(l1->auteur, l2->auteur)==0)&&(strcmp(l1->titre, l2->titre)==0)) //Livre ayant même auteur et même titre
 	{
 		return 1;
 	}
